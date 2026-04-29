@@ -181,6 +181,18 @@ async function dispatch(method, params) {
       return await screenshot(params);
     case "page.domSnapshot":
       return await executeInTab(params.tabId, collectDomSnapshot, [params.maxNodes ?? 1000]);
+    case "page.text":
+      return await executeInTab(params.tabId, collectPageText, [
+        params.offset ?? 0,
+        params.length ?? 8000
+      ]);
+    case "page.findElements":
+      return await executeInTab(params.tabId, findElements, [
+        params.selector ?? DEFAULT_INTERACTIVE_SELECTOR,
+        params.text ?? "",
+        params.visibleOnly ?? true,
+        params.limit ?? 50
+      ]);
     case "page.styleStructure":
       return await executeInTab(params.tabId, collectStyleStructure, [
         params.maxNodes ?? 500,
@@ -623,6 +635,20 @@ const DEFAULT_STYLE_PROPERTIES = [
   "overflow"
 ];
 
+const DEFAULT_INTERACTIVE_SELECTOR = [
+  "a",
+  "button",
+  "input",
+  "textarea",
+  "select",
+  "[role='button']",
+  "[role='link']",
+  "[contenteditable='true']",
+  "h1",
+  "h2",
+  "h3"
+].join(",");
+
 function collectDomSnapshot(maxNodes) {
   const result = [];
   const walker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_ELEMENT);
@@ -650,6 +676,75 @@ function collectDomSnapshot(maxNodes) {
     url: location.href,
     count: result.length,
     nodes: result
+  };
+}
+
+function collectPageText(offset, length) {
+  const text = (document.body?.innerText || document.documentElement?.innerText || "")
+    .replace(/\n{3,}/gu, "\n\n")
+    .trim();
+  const safeOffset = Math.max(0, Number(offset) || 0);
+  const safeLength = Math.max(1, Math.min(Number(length) || 8000, 20000));
+  return {
+    title: document.title,
+    url: location.href,
+    totalLength: text.length,
+    offset: safeOffset,
+    length: safeLength,
+    text: text.slice(safeOffset, safeOffset + safeLength),
+    hasMore: safeOffset + safeLength < text.length
+  };
+}
+
+function findElements(selector, textFilter, visibleOnly, limit) {
+  const needle = String(textFilter || "").toLowerCase();
+  const max = Math.max(1, Math.min(Number(limit) || 50, 200));
+  const nodes = [];
+  const elements = [...document.querySelectorAll(selector)];
+
+  for (let sourceIndex = 0; sourceIndex < elements.length && nodes.length < max; sourceIndex += 1) {
+    const element = elements[sourceIndex];
+    const rect = element.getBoundingClientRect();
+    const visible = rect.width > 0 && rect.height > 0 && rect.bottom >= 0 && rect.top <= innerHeight;
+    if (visibleOnly && !visible) continue;
+
+    const text = visibleText(element) || "";
+    const ariaLabel = element.getAttribute("aria-label") || "";
+    const placeholder = "placeholder" in element ? element.placeholder || "" : "";
+    const value = element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement ? element.value : "";
+    const haystack = `${text} ${ariaLabel} ${placeholder} ${value}`.toLowerCase();
+    if (needle && !haystack.includes(needle)) continue;
+
+    nodes.push({
+      index: sourceIndex,
+      selector: selectorFor(element),
+      tag: element.tagName.toLowerCase(),
+      text: text || undefined,
+      ariaLabel: ariaLabel || undefined,
+      role: element.getAttribute("role") || undefined,
+      type: "type" in element ? element.type || undefined : undefined,
+      value: value || undefined,
+      placeholder: placeholder || undefined,
+      href: element instanceof HTMLAnchorElement ? element.href : undefined,
+      disabled: "disabled" in element ? Boolean(element.disabled) : undefined,
+      editable:
+        element instanceof HTMLInputElement ||
+        element instanceof HTMLTextAreaElement ||
+        element.isContentEditable ||
+        undefined,
+      visible,
+      rect: roundRect(rect)
+    });
+  }
+
+  return {
+    title: document.title,
+    url: location.href,
+    selector,
+    textFilter: textFilter || undefined,
+    totalMatches: elements.length,
+    count: nodes.length,
+    nodes
   };
 }
 

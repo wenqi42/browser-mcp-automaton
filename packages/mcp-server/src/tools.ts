@@ -92,6 +92,30 @@ export function registerTools(server: McpServer, bridge: ExtensionBridge): void 
   );
 
   server.tool(
+    "browser_page_text",
+    "Return visible page text in bounded chunks for long-page reading.",
+    {
+      tabId: z.number().int().optional(),
+      offset: z.number().int().min(0).optional().default(0),
+      length: z.number().int().min(1).max(20000).optional().default(8000)
+    },
+    async (params) => jsonText(await bridge.request("page.text", params))
+  );
+
+  server.tool(
+    "browser_find_elements",
+    "Find visible elements by CSS selector and optional text filter.",
+    {
+      tabId: z.number().int().optional(),
+      selector: z.string().min(1).optional(),
+      text: z.string().min(1).optional(),
+      visibleOnly: z.boolean().optional().default(true),
+      limit: z.number().int().min(1).max(200).optional().default(50)
+    },
+    async (params) => jsonText(await bridge.request("page.findElements", params))
+  );
+
+  server.tool(
     "browser_style_structure",
     "Return visible element structure with bounding boxes and selected computed CSS properties.",
     {

@@ -20,8 +20,11 @@ Implemented:
 - Tab listing and active tab inspection
 - Visible-tab screenshot capture
 - Compact DOM snapshot
+- Bounded page text extraction
+- Visible element discovery
 - Computed style and layout structure extraction
 - Console message and page error capture
+- Click and text-entry helpers for common page interactions
 - Optional page script execution
 - Optional network metadata capture with sensitive headers redacted
 
@@ -89,9 +92,14 @@ Example MCP client config:
 - `browser_tabs_list`: list tabs visible to the extension
 - `browser_active_tab`: return the active tab
 - `browser_screenshot`: capture a visible-tab PNG
+- `browser_screenshot_save`: capture a visible-tab PNG and save it to a local file
 - `browser_dom_snapshot`: return a compact DOM snapshot
+- `browser_page_text`: return visible page text in bounded chunks
+- `browser_find_elements`: find visible elements by selector and optional text filter
 - `browser_style_structure`: return visible elements, bounding boxes, and selected computed styles
 - `browser_computed_styles`: return selected computed CSS properties for a selector
+- `browser_click`: click a visible element matching a selector
+- `browser_type_text`: type into an input, textarea, or contenteditable element
 - `browser_console_start_capture`: start capturing console messages and page errors
 - `browser_console_logs`: return captured console messages and page errors
 - `browser_console_clear`: clear captured console messages and page errors
@@ -123,6 +131,16 @@ Pass arguments separately:
   }
 }
 ```
+
+Use `browser_page_text`, `browser_find_elements`, `browser_click`, and `browser_type_text` before reaching for custom scripts. They cover common inspection and interaction flows with smaller, easier-to-debug operations.
+
+For React/Vue-style controlled inputs, prefer a two-step interaction:
+
+```text
+browser_type_text -> browser_click
+```
+
+Some pages do not submit search boxes reliably from synthetic Enter key events alone, so clicking the page's visible submit/search button is usually more robust.
 
 ## Console And Error Logs
 

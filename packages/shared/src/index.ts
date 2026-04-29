@@ -9,6 +9,8 @@ export type BrowserRpcMethod =
   | "tabs.active"
   | "page.screenshot"
   | "page.domSnapshot"
+  | "page.text"
+  | "page.findElements"
   | "page.styleStructure"
   | "page.computedStyles"
   | "page.runScript"
@@ -92,6 +94,8 @@ export const METHOD_SAFETY: Record<BrowserRpcMethod, SafetyTier> = {
   "tabs.active": "read",
   "page.screenshot": "read",
   "page.domSnapshot": "read",
+  "page.text": "read",
+  "page.findElements": "read",
   "page.styleStructure": "read",
   "page.computedStyles": "read",
   "page.runScript": "high-trust",

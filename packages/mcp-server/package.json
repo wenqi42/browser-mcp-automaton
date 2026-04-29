@@ -1,0 +1,21 @@
+{
+  "name": "@browser-mcp-automaton/mcp-server",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "browser-mcp-automaton": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@browser-mcp-automaton/shared": "0.1.0",
+    "@modelcontextprotocol/sdk": "^1.21.0",
+    "ws": "^8.18.0",
+    "zod": "^3.24.1"
+  }
+}

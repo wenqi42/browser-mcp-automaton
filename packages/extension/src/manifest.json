@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Browser MCP Automaton",
+  "version": "0.1.0",
+  "description": "Connect the user's real browser tabs to a local MCP server through an explicit RPC bridge.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Browser MCP Automaton",
+    "default_popup": "popup.html"
+  }
+}

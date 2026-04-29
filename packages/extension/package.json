@@ -1,0 +1,10 @@
+{
+  "name": "@browser-mcp-automaton/extension",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node ../../scripts/copy-extension.mjs",
+    "typecheck": "node -e \"console.log('extension uses browser runtime JavaScript; no TypeScript step')\""
+  }
+}

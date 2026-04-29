@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Browser MCP Automaton</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Browser MCP</h1>
+        <span id="status" class="status">Disconnected</span>
+      </header>
+
+      <label>
+        Server URL
+        <input id="serverUrl" spellcheck="false" />
+      </label>
+
+      <label>
+        Token
+        <input id="token" type="password" spellcheck="false" />
+      </label>
+
+      <label>
+        Allowed hosts
+        <textarea id="allowedHosts" placeholder="example.com&#10;localhost"></textarea>
+      </label>
+
+      <label class="check">
+        <input id="allowScriptExecution" type="checkbox" />
+        <span>Allow page script execution</span>
+      </label>
+
+      <label class="check">
+        <input id="allowNetworkCapture" type="checkbox" />
+        <span>Allow network capture</span>
+      </label>
+
+      <label class="check">
+        <input id="includeRequestHeaders" type="checkbox" />
+        <span>Include redacted request headers</span>
+      </label>
+
+      <footer>
+        <button id="save">Save</button>
+        <button id="connect">Connect</button>
+        <button id="disconnect" class="secondary">Disconnect</button>
+      </footer>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

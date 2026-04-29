@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "browser-mcp-automaton": {
+      "command": "node",
+      "args": [
+        "C:/Users/nest/Desktop/browser-mcp-automaton/packages/mcp-server/dist/index.js"
+      ],
+      "env": {
+        "BMA_TOKEN": "replace-with-a-local-token"
+      }
+    }
+  }
+}

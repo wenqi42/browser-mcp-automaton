@@ -1,0 +1,53 @@
+{
+  "name": "browser-mcp-automaton",
+  "version": "0.1.0",
+  "description": "A local-first MCP bridge for controlling a user's real Chrome/Edge browser through a browser extension.",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "author": "wenqi",
+  "packageManager": "npm@10.9.2",
+  "keywords": [
+    "mcp",
+    "browser",
+    "chrome-extension",
+    "edge-extension",
+    "automation",
+    "agent"
+  ],
+  "workspaces": [
+    "packages/*"
+  ],
+  "bin": {
+    "browser-mcp-automaton": "packages/mcp-server/dist/index.js"
+  },
+  "files": [
+    "packages/mcp-server/dist",
+    "packages/shared/dist",
+    "packages/extension",
+    "README.md",
+    "SECURITY.md",
+    "docs"
+  ],
+  "scripts": {
+    "build": "npm run build --prefix packages/shared && npm run build --prefix packages/mcp-server && npm run build --prefix packages/extension",
+    "typecheck": "npm run build --prefix packages/shared && npm run typecheck --prefix packages/mcp-server && npm run typecheck --prefix packages/extension",
+    "dev:server": "npm run dev --prefix packages/mcp-server",
+    "clean": "node scripts/clean.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.21.0",
+    "ws": "^8.18.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/ws": "^8.5.13",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  }
+}
